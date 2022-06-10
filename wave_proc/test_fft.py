@@ -68,5 +68,111 @@ def test1():
     plt.show()
 
 
+def test2():
+    sampling_rate = 8096  # 采样率
+    fft_size = 1024  # FFT长度
+    t = np.arange(0, 1.0, 1.0 / sampling_rate)
+    x = np.sin(2 * np.pi * 156.25 * t) + 2 * np.sin(2 * np.pi * 234.375 * t) + 3 * np.sin(2 * np.pi * 200 * t)
+    xs = x[:fft_size]
+
+    xf = np.fft.rfft(xs) / fft_size  # 返回fft_size/2+1 个频率
+
+    freqs = np.linspace(0, sampling_rate // 2, fft_size // 2 + 1)  # 表示频率
+    xfp = np.abs(xf) * 2  # 代表信号的幅值，即振幅
+
+    plt.figure(num='original', figsize=(15, 6))
+    plt.plot(x[:fft_size])
+
+    plt.figure(figsize=(8, 4))
+    plt.subplot(211)
+    plt.plot(t[:fft_size], xs)
+    plt.xlabel("t(s)")
+    plt.title("156.25Hz and 234.375Hz waveform and spectrum")
+
+    plt.subplot(212)
+    plt.plot(freqs, xfp)
+    plt.xlabel("freq(Hz)")
+    plt.ylabel("amplitude")
+    plt.subplots_adjust(hspace=0.4)
+    plt.show()
+
+
+def test3():
+    N = 1024
+    t = np.linspace(0, 2 * np.pi, N)
+    x = 0.3 * np.cos(t) + 0.5 * np.cos(2 * t + np.pi / 4) + 0.8 * np.cos(3 * t - np.pi / 3)
+    xf = np.fft.fft(x) / N
+    freq = np.arange(N)
+
+    plt.figure(figsize=(8, 4))
+    plt.subplot(211)
+    plt.plot(t, x)
+    plt.xlabel("t(s)")
+    plt.title("waveform and spectrum")
+
+    plt.subplot(212)
+    plt.plot(freq, np.abs(xf) * 2)
+    plt.xlabel("freq(Hz)")
+    plt.ylabel("amplitude")
+    plt.subplots_adjust(hspace=0.4)
+    plt.show()
+
+
+def test4():
+    Fs = 64
+    f_o = [5, 15, 20]
+    t = np.arange(0, 10, 1.0 / Fs)
+    x = np.sum([np.sin(2 * np.pi * f1 * t) for f1 in f_o], axis=0)
+    N = len(t)
+
+    X = np.fft.fft(x)
+    f = np.arange(N) * Fs * 1.0 / N
+
+    f_shift = f - Fs / 2
+    X_shift = np.fft.fftshift(X)  # 调整0频位置
+
+    N_p = N // 2
+    f_p = f_shift[N_p:]
+    X_p = (np.abs(X_shift)[N_p:]) * 2
+
+    x_r = np.fft.ifft(X)
+
+    plt.figure(figsize=(8, 20))
+    plt.subplot(511)
+    plt.plot(t, x)
+    plt.xlabel("t(s)")
+    plt.ylabel("Amplitude")
+    plt.title("Original Signal")
+
+    plt.subplot(512)
+    plt.plot(f, np.abs(X))
+    plt.xlabel("f(Hz)")
+    plt.ylabel("Amplitude")
+    plt.title("spectrum")
+    plt.subplots_adjust(hspace=0.4)
+
+    plt.subplot(513)
+    plt.plot(f_shift, np.abs(X_shift))
+    plt.xlabel("f(Hz)")
+    plt.ylabel("Amplitude")
+    plt.title("spectrum")
+    plt.subplots_adjust(hspace=0.4)
+
+    plt.subplot(514)
+    plt.plot(f_p, X_p)
+    plt.xlabel("f(Hz)")
+    plt.ylabel("Amplitude")
+    plt.title("spectrum")
+    plt.subplots_adjust(hspace=0.4)
+
+    plt.subplot(515)
+    plt.plot(t, np.real(x_r))
+    plt.xlabel("t(s)")
+    plt.ylabel("Amplitude")
+    plt.title("reconstruct Signal")
+
+    plt.show()
+
+
 if __name__ == "__main__":
-    test1()
+    test4()
