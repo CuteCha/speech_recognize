@@ -174,5 +174,43 @@ def test4():
     plt.show()
 
 
+def test5():
+    F = 30
+    Fs = 256
+    Ts = 1 / Fs
+
+    tc = np.arange(0, 5 / F, 1e-4)
+    xc = np.cos(2 * np.pi * F * tc)
+    td = np.arange(0, 5 / F, Ts)
+    xd = np.cos(2 * np.pi * F * td)
+    N = len(td)
+
+    xr = np.sum([xd[i] * np.sinc(tc / Ts - i) for i in range(N)], axis=0)
+    err = np.sqrt((xr - xc) ** 2)
+
+    plt.figure(figsize=(8, 20))
+    plt.subplot(311)
+    plt.plot(tc, xc, label='Original')
+    plt.plot(tc, xr, label='Reconstruct')
+    plt.xlabel("t(s)")
+    plt.ylabel("Amplitude")
+    plt.title("Signal(Original vs Reconstruct)")
+    plt.legend()
+
+    plt.subplot(312)
+    plt.plot(td, xd)
+    plt.xlabel("t(s)")
+    plt.ylabel("Amplitude")
+    plt.title("Sampling Signal")
+
+    plt.subplot(313)
+    plt.plot(tc, err)
+    plt.xlabel("t(s)")
+    plt.ylabel("Err")
+    plt.title("Err signal")
+
+    plt.show()
+
+
 if __name__ == "__main__":
-    test4()
+    test5()
