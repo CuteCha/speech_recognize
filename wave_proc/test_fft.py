@@ -198,13 +198,13 @@ def test5():
     plt.legend()
 
     plt.subplot(312)
-    plt.plot(td, xd)
+    plt.plot(td, xd, 'r--o')
     plt.xlabel("t(s)")
     plt.ylabel("Amplitude")
     plt.title("Sampling Signal")
 
     plt.subplot(313)
-    plt.plot(tc, err)
+    plt.plot(tc, err, 'm--o')
     plt.xlabel("t(s)")
     plt.ylabel("Err")
     plt.title("Err signal")
